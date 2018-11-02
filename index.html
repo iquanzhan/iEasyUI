@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="plugins/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="plugins/easyui/themes/icon.css" />
+    <script type="text/javascript" src="plugins/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="plugins/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="plugins/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="plugins/easyui/plugins/jquery.sidemenu.js"></script>
+    <script type="text/javascript" src="js/holder.min.js"></script>
+
+    <title>iEasyUI</title>
+
+    <style>
+        ul,
+        li {
+            padding: 0;
+            margin: 0;
+        }
+
+        .dragger_point {
+            background: moccasin;
+            width: 40px;
+            height: 15px;
+            font-size: 12px;
+            float: right;
+            cursor: move;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north'" style="height:50px;line-height: 50px;">
+            <image src="holder.js/128x40" style="margin-top:4px;margin-left:10px;float: left;" />
+            <div class="easyui-panel" style="float: left;border: none;">
+                <a href="#" class="easyui-linkbutton" onclick="save()" data-options="plain:true,iconCls:'icon-cancel'">取消</a>
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-reload'">刷新</a>
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save'"></a>
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'"></a>
+            </div>
+        </div>
+        <div data-options="region:'center'" id="centerRegion">
+            <div style="width:15%;float:left;height:100%">
+                <ul>
+                    <li>
+                        菜单和按钮
+                        <ul style="margin-left:20px;list-style: none;">
+                            <li class="draggerMain" type="linkbutton">
+                                链接按钮
+                                <div class="dragger_point">拖动</div>
+                            </li>
+                            <li>按钮开关<div class="dragger_point">拖动</div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="draggableContent" style="width:65%;float:left;height:100%">
+
+            </div>
+            <div style="width:10%;float:left;">
+                <table id="pg" class="easyui-propertygrid" style="width:300px" data-options="showGroup:true,scrollbarSize:0"></table>
+                <a href="#" class="easyui-linkbutton">保存</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    var target = undefined;
+
+    $(function () {
+        $('.draggerMain').draggable({
+            handle: '.dragger_point',
+            revert: true,
+            proxy: function (source) {
+                var p = $('<div style="border:1px solid #ccc;width:80px"></div>');
+                p.html($(source).html()).appendTo('body');
+                return p;
+            },
+            onStopDrag: function (e) {
+                var type = e.data.target.type;
+                var html = "";
+                switch (type) {
+                    case 'linkbutton':
+                        {
+                            html =
+                            '<a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-search\'">easyui</a>';
+                            break;
+                        }
+                }
+                $("#draggableContent").append(html);
+                $.parser.parse("#draggableContent");
+
+
+                $("#draggableContent").children().click(function (e) {
+                    target = e.currentTarget;
+                    $(target).text("你好");
+                    $.parser.parse("#draggableContent");
+                })
+            }
+        });
+        $('#pg').propertygrid({
+            showGroup: true,
+            scrollbarSize: 0,
+            data: {
+                "total": 4,
+                "rows": [{
+                        "name": "text",
+                        "value": "",
+                        "group": "基本设置",
+                        "editor": "text"
+                    },
+                    {
+                        "name": "iconCls",
+                        "value": "",
+                        "group": "基本设置",
+                        "editor": "text"
+                    },
+                    {
+                        "name": "iconAlign",
+                        "value": "",
+                        "group": "基本设置",
+                        "editor": "text"
+                    }
+                ]
+            }
+        });
+
+    });
+
+
+    function save() {
+        alert($("#draggableContent").html());
+    }
+</script>
+
+</html>
